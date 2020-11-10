@@ -13,7 +13,7 @@ import (
 	"time"
 
 	"github.com/hsiafan/glow/iox/filex"
-	"github.com/hsiafan/httpdump/httpport"
+	"github.com/rogercoll/httpdump/httpport"
 
 	"bufio"
 
@@ -133,8 +133,8 @@ func (h *HTTPTrafficHandler) handle(connection *TCPConnection) {
 		}
 
 		if !filtered {
-			h.printRequest(req)
 			h.writeLine("")
+			h.printRequest(req)
 			h.endTime = connection.lastTimestamp
 			h.printResponse(req.RequestURI, resp)
 			h.printer.send(h.buffer.String())
@@ -319,6 +319,17 @@ func (h *HTTPTrafficHandler) printNormalRequest(req *httpport.Request) {
 		return
 	}
 
+	if h.option.Level == "tma" {
+		h.writeLine(strings.Repeat("=", 10), "REQUEST", strings.Repeat("=", 10))
+		h.writeLine("Src: ", h.key.srcString())
+		h.writeLine("Dst: ", h.key.dstString())
+		h.writeLine("Method: ", req.Method)
+		h.writeLine("Host: ", req.Host)
+		h.writeLine("Uri: ", req.RequestURI)
+		h.writeLine(strings.Repeat("=", 10), "END", strings.Repeat("=", 10))
+		return
+	}
+
 	h.writeLine()
 	h.writeLine(strings.Repeat("*", 10), " REQUEST ", h.key.srcString(), " -----> ", h.key.dstString(), " // ", h.startTime.Format(time.RFC3339Nano))
 
@@ -361,6 +372,15 @@ func (h *HTTPTrafficHandler) printNormalRequest(req *httpport.Request) {
 func (h *HTTPTrafficHandler) printResponse(uri string, resp *httpport.Response) {
 	defer discardAll(resp.Body)
 	if h.option.Level == "url" {
+		return
+	}
+
+	if h.option.Level == "tma" {
+		h.writeLine(strings.Repeat("=", 10), "RESPONSE", strings.Repeat("=", 10))
+		h.writeLine("Src: ", h.key.srcString())
+		h.writeLine("Dst: ", h.key.dstString())
+		h.writeLine(resp.StatusLine)
+		h.writeLine(strings.Repeat("=", 10), "END", strings.Repeat("=", 10))
 		return
 	}
 

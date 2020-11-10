@@ -321,6 +321,7 @@ func (h *HTTPTrafficHandler) printNormalRequest(req *httpport.Request) {
 
 	if h.option.Level == "tma" {
 		h.writeLine(strings.Repeat("=", 10), "REQUEST", strings.Repeat("=", 10))
+		h.writeLine("STime: ", h.startTime.Format(time.RFC3339Nano))
 		h.writeLine("Src: ", h.key.srcString())
 		h.writeLine("Dst: ", h.key.dstString())
 		h.writeLine("Method: ", req.Method)
@@ -377,6 +378,7 @@ func (h *HTTPTrafficHandler) printResponse(uri string, resp *httpport.Response) 
 
 	if h.option.Level == "tma" {
 		h.writeLine(strings.Repeat("=", 10), "RESPONSE", strings.Repeat("=", 10))
+		h.writeLine("STime: ", h.startTime.Format(time.RFC3339Nano))
 		h.writeLine("Src: ", h.key.srcString())
 		h.writeLine("Dst: ", h.key.dstString())
 		h.writeLine(resp.StatusLine)

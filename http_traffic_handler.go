@@ -327,6 +327,7 @@ func (h *HTTPTrafficHandler) printNormalRequest(req *httpport.Request) {
 		h.writeLine("Method: ", req.Method)
 		h.writeLine("Host: ", req.Host)
 		h.writeLine("Uri: ", req.RequestURI)
+		h.writeLine("UserAgent: ", req.UserAgent())
 		h.writeLine(strings.Repeat("=", 10), "END", strings.Repeat("=", 10))
 		return
 	}
